@@ -25,7 +25,7 @@ def datagen(num_chirps=100, low_snr=10, high_snr=90):
 
         dataset["iq_tensors"].append(x_tensor)
         dataset["labels"].append(label_dict)
-    filename = f"chirp_dataset_{num_chirps}.pt"
+    filename = f"dataset_of_{num_chirps}_chirps.pt"
     torch.save(dataset, filename)
 
     print(f"Done. Saved chirps to chirp_dataset_{num_chirps}.pt")

@@ -19,7 +19,6 @@ class ChirpClassifierModel(nn.Module):
 
   def forward(self, batch_iq_tensors):
     batch_sz = len(batch_iq_tensors)
-    print(f"Batch_sz: {batch_sz}")
     batch_iq_tensors = torch.reshape(batch_iq_tensors, shape=(batch_sz, batch_iq_tensors.shape[1] * batch_iq_tensors.shape[2]) )
     print(f"IN DEF FORWARD(): shape of new reshaped batch_iq_tensors: {batch_iq_tensors.shape}")
     return self.layer2(self.layer1(batch_iq_tensors))

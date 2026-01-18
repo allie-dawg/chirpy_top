@@ -5,7 +5,7 @@ import gentestdata
 if __name__ == "__main__":
   num_samples = 1600
   device = "cuda" if torch.cuda.is_available() else "cpu"
-  iq_vec_train, iq_vec_test, label_train, label_test = gentestdata.get_and_preprocess_dataset(batch_sz=1000, train_size=0.2)
+  iq_vec_test, iq_vec_train, label_test, label_train = gentestdata.get_and_preprocess_dataset(batch_sz=1000, train_size=0.2)
   print(f"shape of iq_vec_train: {iq_vec_train.shape}")
   print(f"shape of iq_vec_test: {iq_vec_test.shape}")
   print(f"shape of label_train: {label_train.shape}")

@@ -17,11 +17,10 @@ def get_and_preprocess_dataset(batch_sz, train_size, plot_first_vec=False):
   labels_list = file["labels"]
   batch_labels = torch.tensor([item["no_signal"] for item in labels_list], dtype=torch.float32)
   batch_iq_vectors = unify_vectors_to_same_size(iq_tensors_list)
-  iq_vec_train, iq_vec_test, label_train, label_test = train_test_split(batch_iq_vectors, 
+  iq_vec_test, iq_vec_train, label_test, label_train = train_test_split(batch_iq_vectors, 
                                                                       batch_labels, 
                                                                       train_size=train_size,
                                                                       random_state=42)
-
   # Making sure linter understands that I am returning tensors from this function and not lists
   iq_vec_test = torch.tensor(iq_vec_test) if isinstance(iq_vec_test, list) else iq_vec_test
   iq_vec_train = torch.tensor(iq_vec_train) if isinstance(iq_vec_train, list) else iq_vec_train
@@ -44,8 +43,8 @@ def get_and_preprocess_dataset(batch_sz, train_size, plot_first_vec=False):
     ax.grid(True, linestyle="--", alpha=0.6)
     ax.set_xlim(0, 50e-9)
     plt.show()
-
-  return iq_vec_test, iq_vec_train, label_train, label_test
+  print(f"gentestdata returning len(iq_train): {len(iq_vec_train)}, len(iq_test):{len(iq_vec_test)}, len(label_train): {len(label_train)} len_(label_test): {len(label_test)}")
+  return iq_vec_test, iq_vec_train, label_test, label_train
 
 if __name__ == "__main__":
   plot_first_vec = True
