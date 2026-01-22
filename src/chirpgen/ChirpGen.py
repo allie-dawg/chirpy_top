@@ -44,6 +44,7 @@ class ChirpGenerator:
               sig= noise
             else:
               sig = sig + noise
+        sig = sig.astype(np.float32)
         iq_tensor = torch.from_numpy(sig)
 
         labels = {
