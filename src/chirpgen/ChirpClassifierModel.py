@@ -10,16 +10,13 @@ class ChirpClassifierModel(nn.Module):
   def __init__(self, num_in_samples):
     super().__init__()
     self.num_in_feats = num_in_samples * 2
-    print(f"num_in_samples: {self.num_in_feats}")
     # self.num_hidden_feats = self.num_in_feat + int(self.num_in_feat * 0.5)
     self.num_hidden_feats = 1024
-    print(f"num_hidden_feats: {self.num_hidden_feats}")
     self.layer1 = nn.Linear(in_features=self.num_in_feats, out_features=self.num_hidden_feats, dtype=torch.float32)
     self.layer2 = nn.Linear(in_features=self.num_hidden_feats, out_features=1, dtype=torch.float32)
 
   def forward(self, batch_iq_tensors):
     batch_sz = len(batch_iq_tensors)
     batch_iq_tensors = torch.reshape(batch_iq_tensors, shape=(batch_sz, batch_iq_tensors.shape[1] * batch_iq_tensors.shape[2]) )
-    print(f"IN DEF FORWARD(): shape of new reshaped batch_iq_tensors: {batch_iq_tensors.shape}")
     return self.layer2(self.layer1(batch_iq_tensors))
 
