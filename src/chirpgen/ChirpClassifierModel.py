@@ -11,7 +11,7 @@ class ChirpClassifierModel(nn.Module):
     super().__init__()
     self.num_in_feats = num_in_samples * 2
     # self.num_hidden_feats = self.num_in_feat + int(self.num_in_feat * 0.5)
-    self.num_hidden_feats = 1024
+    self.num_hidden_feats = 4096
     self.layer1 = nn.Linear(in_features=self.num_in_feats, out_features=self.num_hidden_feats, dtype=torch.float32)
     self.layer2 = nn.Linear(in_features=self.num_hidden_feats, out_features=1, dtype=torch.float32)
 

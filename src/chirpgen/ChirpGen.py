@@ -9,7 +9,7 @@ class ChirpGenerator:
             "fs": 2e9,
             "f0": 300e6,
             "f1": 900e6,
-            "duration": 50e-9,
+            "num_samples" : 8192,
             "snr": 0,
             "method": "linear",  # linear, quadratic, logarithmic
             "no_signal": False,
@@ -18,16 +18,17 @@ class ChirpGenerator:
 
     def generate(self, **overrides):
         """Merges parameters from constructor
-        and uses scipy chirp for IQ data"""
+        and uses scipy chirp for IQ data
+        """
 
         p = {**self.params, **overrides}
-
-        t = np.linspace(0, p["duration"], int(p["fs"] * p["duration"]), endpoint=False)
-
+        t = np.linspace(0, p["num_samples"] / p["fs"], p["num_samples"], endpoint=False)
+        num_samples = p["num_samples"]
+        print(f"IN ChirpGenerator.generate: num_samples: {num_samples}")
         sig = chirp(
             t,
             f0=p["f0"],
-            t1=p["duration"],
+            t1=p["num_samples"] / p["fs"], # Duration
             f1=p["f1"],
             method=p["method"],
             complex=True,
@@ -44,13 +45,14 @@ class ChirpGenerator:
               sig= noise
             else:
               sig = sig + noise
+        print(f"Length of a signal: {len(sig)}")
         sig = sig.astype(np.float32)
         iq_tensor = torch.from_numpy(sig)
 
         labels = {
             "fs": p["fs"],
             "snr": p["snr"],
-            "duration": p["duration"],
+            "num_samples": p["num_samples"],
             "f0": p["f0"],
             "f1": p["f1"],
             "no_signal": p["no_signal"],
@@ -59,13 +61,14 @@ class ChirpGenerator:
         return iq_tensor, labels
 if __name__ == "__main__":
   import matplotlib.pyplot as plt
-  gen = ChirpGenerator(fs=4e9, snr=1, duration=500e-9, f0=100e6, f1=1000e6, no_signal=False)
+  gen = ChirpGenerator(fs=4e9, snr=1, num_samples=8192, f0=100e6, f1=1000e6, no_signal=False)
   plot = True
   iq_tensor, label = gen.generate()
 
   print(f"Shape of returned sig tensor: {iq_tensor.shape}")
   if (plot):
-    fs, snr, duration, f0, f1, no_signal = label.values()
+    fs, snr, num_samples, f0, f1, no_signal = label.values()
+    duration = num_samples / fs
     print(f"Labels: {label.values()}")
     print(f"SNR: {snr}")
     print(f"No signal?: {no_signal}")

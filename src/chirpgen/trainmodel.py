@@ -1,7 +1,8 @@
 import torch
 from torch.nn import BCEWithLogitsLoss
 from ChirpClassifierModel import ChirpClassifierModel
-import gentestdata
+#from chirpgen import preprocessdataset
+import preprocessdataset
 
 def accuracy_fn(y_true, y_pred):
   correct = torch.eq(y_true, y_pred).sum().item()
@@ -9,10 +10,11 @@ def accuracy_fn(y_true, y_pred):
   return acc
 
 if __name__ == "__main__":
-  num_samples = 1600
+  batch_sz = 5000
+  num_samples_in_single_vec = 16384
   device = "cuda" if torch.cuda.is_available() else "cpu"
-  iq_vec_test, iq_vec_train, label_test, label_train = gentestdata.get_and_preprocess_dataset(batch_sz=1000, train_size=0.2)
-  model0 = ChirpClassifierModel(1600).to(device)
+  iq_vec_test, iq_vec_train, label_test, label_train = preprocessdataset.get_and_preprocess_dataset(batch_sz=batch_sz, low_snr=2, high_snr=20, train_size=0.2)
+  model0 = ChirpClassifierModel(num_samples_in_single_vec).to(device)
   untrained_preds = model0(iq_vec_test.to(device))
 
   loss_fn = BCEWithLogitsLoss()

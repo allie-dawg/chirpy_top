@@ -1,4 +1,4 @@
-from datagen import datagen
+from datagen import createadataset  
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,8 +10,8 @@ def unify_vectors_to_same_size(input_list):
   padded_tensor = pad_sequence(input_list, batch_first=True, padding_value=0)
   return padded_tensor
 
-def get_and_preprocess_dataset(batch_sz, train_size, plot_first_vec=False):
-  filename = datagen(batch_sz, low_snr=5, high_snr=100)
+def get_and_preprocess_dataset(batch_sz, train_size, low_snr=5, high_snr=90, plot_first_vec=False):
+  filename = createadataset(batch_sz, low_snr=low_snr, high_snr=high_snr)
   file = torch.load(f"./{filename}", weights_only=False)
   iq_tensors_list = file["iq_tensors"]
   labels_list = file["labels"]
