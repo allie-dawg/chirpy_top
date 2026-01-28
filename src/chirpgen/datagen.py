@@ -17,7 +17,6 @@ def createadataset(num_chirps=100, low_snr=10, high_snr=90):
         cur_f0 = np.random.uniform(100e6, 500e6)
         cur_f1 = np.random.uniform(1000e6, 2000e6)
         cur_has_sig = np.random.choice([True, False])
-        print(f"IN datagen.py createadataset loop cur_num_samp: {cur_num_samp}") 
         x_tensor, label_dict = gen.generate(
             fs=fs,
             snr=cur_snr,
@@ -27,7 +26,6 @@ def createadataset(num_chirps=100, low_snr=10, high_snr=90):
             no_signal=cur_has_sig,
         )
 
-        #print(f"Current labels: {label_dict}")
         dataset["iq_tensors"].append(x_tensor)
         dataset["labels"].append(label_dict)
     filename = f"dataset_of_{num_chirps}_chirps.pt"

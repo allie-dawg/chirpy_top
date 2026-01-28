@@ -7,7 +7,10 @@ from torch.nn.utils.rnn import pad_sequence
 
 
 def unify_vectors_to_same_size(input_list):
-  padded_tensor = pad_sequence(input_list, batch_first=True, padding_value=0)
+  padded_tensor = pad_sequence(input_list, batch_first=True, padding_value=-99999)
+  noise = torch.randn_like(padded_tensor)
+  mask = (padded_tensor == -99999)
+  padded_tensor[mask] = noise[mask]
   return padded_tensor
 
 def get_and_preprocess_dataset(batch_sz, train_size, low_snr=5, high_snr=90, plot_first_vec=False):
@@ -28,25 +31,28 @@ def get_and_preprocess_dataset(batch_sz, train_size, low_snr=5, high_snr=90, plo
   label_test = torch.tensor(label_test) if isinstance(label_test, list) else label_test 
 
   if (plot_first_vec):
-    fs, snr, duration, f0, f1, no_signal = labels_list[0].values()
-    print(f"SNR: {snr}")
-    print(f"No signal?: {no_signal}")
-    t = np.linspace(0, duration, int(duration * fs), endpoint=False)
-    fig, ax = plt.subplots(figsize=(10, 6))
-    print(f"{iq_vec_test}")
-    plt.style.use("dark_background")
-    ax.plot(t, iq_tensors_list[0].real, label="I set", color="tab:blue")
-    ax.plot(t, iq_tensors_list[0].imag, label="Q set", color="tab:orange")
-    ax.set_title("I and Q", fontsize=4)
-    ax.set_xlabel("time")
-    ax.set_ylabel("IQ tensor data")
-    ax.grid(True, linestyle="--", alpha=0.6)
-    ax.set_xlim(0, 50e-9)
-    plt.show()
+    for i in range(10):
+      fs, snr, duration, f0, f1, no_signal = labels_list[i].values()
+      print(f"SNR: {snr}")
+      print(f"No signal?: {no_signal}")
+      t = np.linspace(0, duration, len(iq_tensors_list[i]), endpoint=False)
+      print(f"duration: {duration}")
+      fig, ax = plt.subplots(figsize=(10, 6))
+      print(f"{iq_vec_test}")
+      plt.style.use("dark_background")
+      ax.plot(t, iq_tensors_list[i][:,0], label="I set", color="tab:blue")
+      ax.plot(t, iq_tensors_list[i][:,1], label="Q set", color="tab:orange")
+      ax.set_title("I and Q", fontsize=4)
+      ax.set_xlabel("time")
+      ax.set_ylabel("IQ tensor data")
+      ax.grid(True, linestyle="--", alpha=0.6)
+      ax.set_xlim(0 , duration)
+      print("Running show()")
+      plt.show()
   print(f"gentestdata returning len(iq_train): {len(iq_vec_train)}, len(iq_test):{len(iq_vec_test)}, len(label_train): {len(label_train)} len_(label_test): {len(label_test)}")
 
   return iq_vec_test, iq_vec_train, label_test, label_train
 
 if __name__ == "__main__":
   plot_first_vec = True
-  get_and_preprocess_dataset(1000, 0.2)
+  get_and_preprocess_dataset(1000, 0.2, 5, 100, True )

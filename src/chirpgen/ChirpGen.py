@@ -23,8 +23,6 @@ class ChirpGenerator:
 
         p = {**self.params, **overrides}
         t = np.linspace(0, p["num_samples"] / p["fs"], p["num_samples"], endpoint=False)
-        num_samples = p["num_samples"]
-        print(f"IN ChirpGenerator.generate: num_samples: {num_samples}")
         sig = chirp(
             t,
             f0=p["f0"],
@@ -45,7 +43,6 @@ class ChirpGenerator:
               sig= noise
             else:
               sig = sig + noise
-        print(f"Length of a signal: {len(sig)}")
         sig = sig.astype(np.float32)
         iq_tensor = torch.from_numpy(sig)
 
